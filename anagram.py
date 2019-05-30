@@ -12,7 +12,7 @@ for word in dictionary:
 newDictionary.sort()
 
 letters = input("Letters: ")
-sortedLetters = ''.join(sorted(letters.lower()))
+sortedLetters = ''.join(sorted(set(letters.lower())))
 
 def search(arr, l, r, target):
     while l <= r:
@@ -25,12 +25,20 @@ def search(arr, l, r, target):
                     break
             index += 1
             while arr[index][0][0] == target[0] and arr[index][0][1] <= target[len(target)-1]:
-                if all(i in target for i in arr[index][0]) and arr[index][1] not in words:
-                    points = 1
+                tempString = target[:]
+                count = 0
+                for i in range(len(arr[index][0])):
+                    for j in range(len(tempString)):
+                        if arr[index][0][i] == tempString[j]:
+                            count += 1
+                            tempString = tempString[:j] + tempString[j+1:]
+                            break
+                if count == len(arr[index][0]) and arr[index][1] not in words:
+                    points = 0
                     for letter in arr[index][0]:
-                        if letter in ['C', 'F', 'H', 'L', 'M', 'P', 'V', 'W', 'Y']:
+                        if letter in ['c', 'f', 'h', 'l', 'm', 'p', 'v', 'w', 'y']:
                             points += 2
-                        if letter in ['J', 'K', 'Q', 'X', 'Z']:
+                        if letter in ['j', 'k', 'q', 'x', 'z']:
                             points += 3
                         else:
                             points += 1
