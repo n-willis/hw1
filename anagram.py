@@ -3,7 +3,6 @@ import math
 dictionary = open('dictionary.words').read().splitlines()
 newDictionary = []
 words = []
-indexes = []
 
 for word in dictionary:
     sortedWord = ''.join(sorted(word.lower()))
@@ -11,8 +10,12 @@ for word in dictionary:
     newDictionary.append(wordList)
 newDictionary.sort()
 
-letters = input("Letters: ")
-sortedLetters = ''.join(sorted(set(letters.lower())))
+letters = input("What letters do you see?\n-(For 'Qu' type 'q' or 'Q')\n ")
+letters = list(letters.lower())
+if 'q' in letters:
+    letters.append('qu')
+    letters.remove('q')
+sortedLetters = sorted(letters)
 
 def search(arr, l, r, target):
     while l <= r:
@@ -25,20 +28,26 @@ def search(arr, l, r, target):
                     break
             index += 1
             while arr[index][0][0] == target[0] and arr[index][0][1] <= target[len(target)-1]:
-                tempString = target[:]
+                tempList = target.copy()
+                tempString = arr[index][0][:]
                 count = 0
-                for i in range(len(arr[index][0])):
-                    for j in range(len(tempString)):
-                        if arr[index][0][i] == tempString[j]:
+                for i in range(len(tempString)):
+                    for j in range(len(tempList)):
+                        if tempString[i] == tempList[j]:
                             count += 1
-                            tempString = tempString[:j] + tempString[j+1:]
+                            tempList.pop(j)
                             break
-                if count == len(arr[index][0]) and arr[index][1] not in words:
-                    points = 0
+                        elif tempString[i] == 'q' and 'u' in tempString and 'qu' in tempList:
+                            count += 2
+                            tempList.remove('qu')
+                            tempString.replace('u', '')
+                            break
+                if (count == len(arr[index][0])) and not(any(arr[index][1] in sublist[1] for sublist in words)):
+                    points = 1
                     for letter in arr[index][0]:
                         if letter in ['c', 'f', 'h', 'l', 'm', 'p', 'v', 'w', 'y']:
                             points += 2
-                        if letter in ['j', 'k', 'q', 'x', 'z']:
+                        elif letter in ['j', 'k', 'q', 'x', 'z']:
                             points += 3
                         else:
                             points += 1
