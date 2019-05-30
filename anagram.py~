@@ -1,0 +1,47 @@
+import math
+
+dictionary = open('dictionary.words').read().splitlines()
+newDictionary = []
+words = []
+indexes = []
+
+for word in dictionary:
+    sortedWord = ''.join(sorted(word.lower()))
+    wordList = [sortedWord, word]
+    newDictionary.append(wordList)
+newDictionary.sort()
+
+letters = input("Letters: ")
+sortedLetters = ''.join(sorted(letters.lower()))
+
+def search(dict, l, r, target):
+    while l <= r:
+        mid = int(math.ceil((l+r) / 2))
+        if dict[mid][0] in target:
+            i = mid
+            while all(letter >= target[0] for letter in dict[i][0]):
+                i -= 1
+            index = i + 1
+            indexes.append(index)
+        elif dict[mid][0] < target:
+            l = mid + 1
+        else:
+            r = mid - 1
+    return indexes
+
+newLetters = sortedLetters
+for searches in range(len(sortedLetters)-2):
+    result = search(newDictionary, 0, len(newDictionary)-1, newLetters)
+    if result != []:
+        for index in result:
+            i = index
+            while all(letter < newLetters[len(newLetters)-1] for letter in newDictionary[i][0]) :
+                if newDictionary[i][0] in newLetters:
+                    words.append(newDictionary[i][1])
+                i += 1
+    newLetters = newLetters[1:] 
+
+if words != []:
+    print(words)
+else:
+    print("No words found")
